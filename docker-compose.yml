@@ -7,7 +7,7 @@ services:
       - DEBUG=hellostripe:*
     volumes:
       - .:/app
-      - /app/nodevolumes
+      - /app/node_modules
     command: [nodemon, ./bin/www]
     ports:
       - "3000:3000"

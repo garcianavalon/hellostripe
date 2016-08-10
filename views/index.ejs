@@ -1,11 +1,23 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %></title>
+    <title>Hello Stripe!</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+    <h1>Hello Stripe!</h1>
+    <form action="" method="POST">
+      <script
+        src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+        data-key="pk_test_EUkfRZwz4TXS3ujwC4GNRIUy"
+        data-amount="999"
+        data-name="Pay Kike a beer"
+        data-description="Thanks mate! :)"
+        data-image="https://s.gravatar.com/avatar/135f9d23e261fb03f514f45011725b41?s=80&r=g"
+        data-locale="auto"
+        data-zip-code="true"
+        data-currency="eur">
+      </script>
+    </form>
   </body>
 </html>

@@ -6,16 +6,108 @@
   </head>
   <body>
     <h1>Hello Stripe!</h1>
+    
+
+    <p>This button uses Stripe Connect for a payment: 
     <button id="customButton">Buy Kike a beer</button>
+    </p>
 
-    <p>This button uses Stripe Connect for a payment</p>
+    <p>
+      Here you can add a credit card validated using Stripe.js:
+      <form action="" method="POST" id="payment-form">
+        <span id="payment_errors"></span>
 
+        <div class="form-row">
+          <label>
+            <span>Card Number</span>
+            <input type="text" size="20" data-stripe="number" id="number">
+          </label>
+        </div>
+
+        <div class="form-row">
+          <label>
+            <span>Expiration (MM/YY)</span>
+            <input type="text" size="2" data-stripe="exp_month" id="exp_month">
+          </label>
+          <span> / </span>
+          <input type="text" size="2" data-stripe="exp_year" id="exp_year">
+        </div>
+
+        <div class="form-row">
+          <label>
+            <span>CVC</span>
+            <input type="text" size="4" data-stripe="cvc" id="cvc">
+          </label>
+        </div>
+
+        <div class="form-row">
+          <label>
+            <span>Billing Zip</span>
+            <input type="text" size="6" data-stripe="address_zip" id="address_zip">
+          </label>
+        </div>
+
+        <input type="submit" class="submit" value="Submit Card" id="submitForm">
+      </form>
+    </p>
+
+
+    <script src="https://js.stripe.com/v2/"></script>
+    <script>
+      // set a key
+      Stripe.setPublishableKey('<%= stripeApiKey %>');
+
+      // collect card details
+      document.getElementById('payment-form').onsubmit = function(event) {
+        // Prevent the form from being submitted:
+        event.preventDefault();
+
+        // Disable the submit button to prevent repeated clicks:
+        document.getElementById('submitForm').disabled = true;
+
+        // Request a token from Stripe:
+        Stripe.card.createToken({
+          number: document.getElementById('number').value,
+          cvc: document.getElementById('cvc').value,
+          exp_month: document.getElementById('exp_month').value,
+          exp_year: document.getElementById('exp_year').value,
+          address_zip: document.getElementById('address_zip').value
+        }, stripeResponseHandler);
+
+      };
+
+      function stripeResponseHandler(status, response) {
+        // Grab the form:
+        var form = document.getElementById('payment-form');
+
+        if (response.error) { // Problem!
+
+          console.error('Stripe error', response.error);
+          // Show the errors on the form:
+          document.getElementById('payment_errors').innerHTML = response.error.message;
+          document.getElementById('submitForm').disabled = false; // Re-enable submission
+
+        } else { // Token was created!
+
+          // Get the token ID:
+          var token = response.id;
+          console.log('Stripe token %s', token);
+          // Insert the token ID into the form so it gets submitted to the server:
+          form.innerHTML += ('<input type="hidden" name="stripeToken" id="stripeToken">');
+          document.getElementById('stripeToken').value = token;
+
+          // Submit the form:
+          form.submit();
+        }
+      };
+      
+    </script>
     
     <script src="https://checkout.stripe.com/checkout.js"></script>
 
     <script>
       var handler = StripeCheckout.configure({
-        key: 'pk_test_EUkfRZwz4TXS3ujwC4GNRIUy',
+        key: '<%= stripeApiKey %>',
         image: 'https://s.gravatar.com/avatar/135f9d23e261fb03f514f45011725b41?s=80&r=g',
         locale: 'auto',
         token: function(token) {

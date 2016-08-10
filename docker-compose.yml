@@ -5,6 +5,7 @@ services:
     image: garcianavalon/hellostripe
     environment:
       - DEBUG=hellostripe:*
+      - STRIPE_API_KEY=pk_test_EUkfRZwz4TXS3ujwC4GNRIUy
     volumes:
       - .:/app
       - /app/node_modules
